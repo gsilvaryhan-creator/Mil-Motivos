@@ -22,18 +22,19 @@
             width: 100vw;
             font-family: Arial, sans-serif;
         }
-        /* Caixa virtual do jogo (Proporção 16:9 de cinema) */
+        /* Tela de Jogo na Vertical (Estilo Mobile Proporção 9:16) */
         #game-wrapper {
-            width: 1280px;
-            height: 720px;
+            width: 430px;
+            height: 765px;
             position: relative;
             background: linear-gradient(135deg, #1e1e24 0%, #111115 100%);
             overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
-        /* Imagens de Cenário */
+        /* Cenário de Fundo Cobrindo a Tela */
         .background {
-            width: 1280px;
-            height: 720px;
+            width: 100%;
+            height: 100%;
             background-size: cover;
             background-position: center;
             position: absolute;
@@ -42,40 +43,40 @@
             transition: background-image 0.5s ease;
             z-index: 1;
         }
-        /* Tela do Menu Principal */
+        /* Tela Inicial do Menu */
         #menu-screen {
             position: absolute;
             top: 0;
             left: 0;
-            width: 1280px;
-            height: 720px;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            padding: 80px 20px;
+            padding: 100px 30px;
             z-index: 10;
         }
         h1 {
             color: #ffffff;
-            font-size: 85px;
+            font-size: 50px;
             margin: 0;
             text-align: center;
             font-family: 'Georgia', serif;
-            text-shadow: 4px 4px 15px rgba(0,0,0,0.9);
+            text-shadow: 3px 3px 10px rgba(0,0,0,0.9);
             z-index: 2;
         }
-        /* Botão Jogar */
+        /* Botão Iniciar */
         #start-button {
             background-color: #ffcc00;
             color: #000000;
-            border: 4px solid #ffffff;
-            border-radius: 50px;
-            padding: 20px 60px;
-            font-size: 32px;
+            border: 3px solid #ffffff;
+            border-radius: 40px;
+            padding: 15px 50px;
+            font-size: 24px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.5);
             transition: transform 0.2s, background-color 0.2s;
             z-index: 15;
             outline: none;
@@ -84,47 +85,49 @@
             transform: scale(0.95);
             background-color: #e6b800;
         }
-        /* Personagens rente à base da caixa de diálogo */
+        /* Personagens Lado a Lado na Tela Vertical */
         .sprite {
             position: absolute;
-            bottom: 210px; /* Colocado mais para baixo, bem na base do diálogo */
-            height: 420px; /* Um pouco maior para manter a proporção */
-            max-width: 420px;
+            bottom: 240px; /* Acima do balão de texto */
+            height: 280px; /* Ajustado para caber no formato vertical */
+            max-width: 180px;
             object-fit: contain;
             transition: all 0.3s ease;
             display: none;
             z-index: 3;
         }
-        #left-sprite { left: 120px; }
-        #right-sprite { right: 120px; }
+        #left-sprite { left: 30px; }
+        #right-sprite { right: 30px; }
+        
         #menu-sofia {
             position: absolute;
-            bottom: 120px;
-            left: 440px;
-            height: 420px;
+            bottom: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 300px;
             z-index: 2;
             pointer-events: none;
         }
-        /* Destaque visual */
+        /* Efeitos Visuais de Foco */
         .active-speaker {
             filter: brightness(1) contrast(1);
-            transform: scale(1.03);
+            transform: scale(1.05);
         }
         .inactive-speaker {
             filter: brightness(0.4);
-            transform: scale(0.97);
+            transform: translateY(5px) scale(0.95);
         }
-        /* Caixa de Diálogo */
+        /* Caixa de Diálogo Mobile (Fica na parte inferior) */
         #dialogue-container {
             position: absolute;
             bottom: 25px;
-            left: 64px;
-            width: 1152px;
-            height: 190px;
+            left: 20px;
+            right: 20px;
+            height: 200px;
             background-color: rgba(0, 0, 0, 0.88);
-            border: 4px solid rgba(255, 255, 255, 0.4);
-            border-radius: 25px;
-            padding: 25px 40px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 20px 25px;
             display: none;
             flex-direction: column;
             justify-content: flex-start;
@@ -133,18 +136,18 @@
         }
         #name-tag {
             color: #ffcc00;
-            font-size: 32px;
+            font-size: 22px;
             font-weight: bold;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         #dialogue-text {
             color: #ffffff;
-            font-size: 26px;
+            font-size: 18px;
             line-height: 1.4;
         }
-        /* Estilo cinza para ações com asterisco */
+        /* Estilo para ações indicadas por asteriscos */
         .action-text {
             color: #aaaaaa;
             font-style: italic;
@@ -174,7 +177,7 @@
     <audio id="bg-music" src="musica.mp3" loop></audio>
 
     <script>
-        // ROTEIRO COMPLETO ATUALIZADO CORRETAMENTE
+        // ROTEIRO ATUALIZADO LINHA POR LINHA
         const story = [
             // Cena 1
             { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Era fim de tarde.' },
@@ -199,10 +202,10 @@
             { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Soltou um miado curioso.' },
             { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Ryhan fez carinho em sua cabeça.' },
             { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Sorriu.' },
-            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Ryhan', text: '— Você também quer saber, Sofia?' },
-            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Ryhan', text: '*Ela inclinou a cabecinha.*' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: 'ryhan.png', speaker: 'Ryhan', text: '— Você também quer saber, Sofia?' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: 'ryhan.png', speaker: 'Ryhan', text: '*Ela inclinou a cabecinha.*' },
             { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Ele respondeu, sem imaginar o que ela entendia.' },
-            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Ryhan', text: '— É difícil explicar...' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: 'ryhan.png', speaker: 'Ryhan', text: '— É difícil explicar...' },
             { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Sofia ficou inconformada.' },
             { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Sofia', text: '"Difícil explicar?"' },
             { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Sendo assim, ela descobriria sozinha.' },
@@ -213,8 +216,8 @@
             { bg: 'sala.jpg', left: 'sofia.png', right: 'coruja.png', speaker: 'Narrador', text: 'Ela escuta Sofia pacientemente.' },
             { bg: 'sala.jpg', left: 'sofia.png', right: 'coruja.png', speaker: 'Narrador', text: 'Depois responde:' },
             { bg: 'sala.jpg', left: 'sofia.png', right: 'coruja.png', speaker: 'Coruja', text: '— Seu pai gosta dela porque ela é bonita.' },
-            { bg: 'sala.jpg', left: 'sofia.png', right: 'coruja.png', speaker: 'Narrador', text: 'Sofia acha que faz sentido.' },
-            { bg: 'sala.jpg', left: 'sofia.png', right: 'coruja.png', speaker: 'Narrador', text: 'No dia seguinte começa a observar.' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Sofia acha que faz sentido.' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'No dia seguinte começa a observar.' },
             { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Vê Tainá acordando.' },
             { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Cabelo completamente bagunçado.' },
             { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Ainda com sono.' },
@@ -266,7 +269,7 @@
             { bg: 'cozinha.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'O sorriso continua.' },
 
             // Cena 5
-            { bg: 'quarto.jpg', left: 'sofia.png', right: 'lontra.png', speaker: 'Narrador', text: 'Sofia procura a ajuda da Lontra pintora.' },
+            { bg: 'quarto.jpg', left: 'sofia.png', right: 'lontra.png', speaker: 'Sofia', text: 'Sofia procura a ajuda da Lontra pintora.' },
             { bg: 'quarto.jpg', left: 'sofia.png', right: 'lontra.png', speaker: 'Narrador', text: 'A Lontra diz:' },
             { bg: 'quarto.jpg', left: 'sofia.png', right: 'lontra.png', speaker: 'Lontra', text: '— Ela vive desenhando paisagens.' },
             { bg: 'quarto.jpg', left: 'sofia.png', right: 'lontra.png', speaker: 'Lontra', text: '— Quando alguém cria coisas bonitas, é impossível não amar.' },
@@ -282,9 +285,10 @@
             { bg: 'quarto.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Mais uma resposta incompleta.' },
 
             // Cena 6
+            { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Sofia escuta os cricris e logo percebe a presença do grilo' },
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Sofia', text: 'Tenho que conversar com o grilo cantor.' },
-            { bg: 'sala_escura.jpg', left: 'sofia.png', right: 'grilo.png', speaker: 'Narrador', text: 'Ele adora música.' },
-            { bg: 'sala_escura.jpg', left: 'sofia.png', right: 'grilo.png', speaker: 'Narrador', text: 'Quando descobre que Tainá toca violão, fica convencido.' },
+            { bg: 'sala_escura.jpg', left: 'sofia.png', right: 'grilo.png', speaker: 'Sofia', text: 'Ele adora música.' },
+            { bg: 'sala_escura.jpg', left: 'sofia.png', right: 'grilo.png', speaker: 'Narrador', text: '*Quando descobre que Tainá toca violão, fica convencido.*' },
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: 'grilo.png', speaker: 'Grilo', text: '— É isso!' },
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: 'grilo.png', speaker: 'Grilo', text: '— A música encanta.' },
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Sofia espera.' },
@@ -301,28 +305,32 @@
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'O sorriso continua igual.' },
 
             // Cena 7
-            { bg: 'sala.jpg', left: 'sofia.png', right: 'raposa.png', speaker: 'Narrador', text: 'Muito convencida.' },
-            { bg: 'sala.jpg', left: 'sofia.png', right: 'raposa.png', speaker: 'Narrador', text: 'Sempre acha que entende tudo.' },
-            { bg: 'sala.jpg', left: 'sofia.png', right: 'raposa.png', speaker: 'Narrador', text: 'Ela diz:' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: 'raposa.png', speaker: 'Narrador', text: 'A raposa ouve boatos sobre a procura por resposta de Sofia' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: 'raposa.png', speaker: 'Narrador', text: 'Sendo muito convencida a Raposa vai até Sofia' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: 'raposa.png', speaker: 'Narrador', text: 'Sempre achando que entende tudo.' },
             { bg: 'sala.jpg', left: 'sofia.png', right: 'raposa.png', speaker: 'Raposa', text: '— Ele ama porque ela faz coisas para ele.' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: 'raposa.png', speaker: 'Sofia', text: '— Você tem certeza?' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: 'raposa.png', speaker: 'Raposa', text: '— Absoluta!' },
             { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Sofia resolve observar.' },
-            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Mas percebe o contrário.' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'But percebe o contrário.' },
             { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Às vezes é Ryhan que a presenteia com algo.' },
             { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Às vezes espera ela terminar alguma tarefa.' },
             { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Às vezes faz pequenas gentilezas sem perceber.' },
             { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Aquilo não parecia uma troca.' },
-            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Parecia...' },
-            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'natural.' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Parecia... natural.' },
 
             // Cena 8
-            { bg: 'jardim.jpg', left: 'sofia.png', right: 'ourico.png', speaker: 'Narrador', text: 'Sofia encontra um ouriço.' },
+            { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Enquanto Sofia perambulava pelo jardim,' },
+            { bg: 'jardim.jpg', left: 'sofia.png', right: 'ourico.png', speaker: 'Narrador', text: 'ela encontrou um ouriço.' },
             { bg: 'jardim.jpg', left: 'sofia.png', right: 'ourico.png', speaker: 'Narrador', text: 'Muito tímido.' },
             { bg: 'jardim.jpg', left: 'sofia.png', right: 'ourico.png', speaker: 'Narrador', text: 'Quase nunca fala.' },
-            { bg: 'jardim.jpg', left: 'sofia.png', right: 'ourico.png', speaker: 'Narrador', text: 'Mas quando fala... diz algo importante.' },
+            { bg: 'jardim.jpg', left: 'sofia.png', right: 'ourico.png', speaker: 'Narrador', text: 'Até que Sofia pergunta...' },
+            { bg: 'jardim.jpg', left: 'sofia.png', right: 'ourico.png', speaker: 'Sofia', text: '— Ouriço, por que Ryhan sempre sorri quando vê Tainá?' },
+            { bg: 'jardim.jpg', left: 'sofia.png', right: 'ourico.png', speaker: 'Narrador', text: 'Então ele decide falar...' },
+            { bg: 'jardim.jpg', left: 'sofia.png', right: 'ourico.png', speaker: 'Narrador', text: 'E acaba dizendo algo importante.' },
             { bg: 'jardim.jpg', left: 'sofia.png', right: 'ourico.png', speaker: 'Ouriço', text: '— Talvez ele goste do sorriso dela.' },
             { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Sofia decide prestar atenção.' },
-            { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Quando Tainá ri... os olhos brilham.' },
-            { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'O sorriso ilumina o rosto inteiro.' },
+            { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Quando Tainá ri... os olhos brilham.', text: 'O sorriso ilumina o rosto inteiro.' },
             { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Ryhan inevitavelmente sorri também.' },
             { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Sofia', text: '"Encontrei!"' },
             { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Sofia pensa.' },
@@ -330,14 +338,16 @@
             { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Num outro dia...' },
             { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Tainá está preocupada.' },
             { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Nem sorri.' },
-            { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Mesmo assim...' },
             { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Ele continua olhando para ela daquele jeito.' },
             { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'A resposta também não era essa.' },
 
             // Cena 9
+            { bg: 'jardim.jpg', left: 'sofia.png', right: 'borboleta.png', speaker: 'Narrador', text: 'Sofia observa uma borboleta' },
             { bg: 'jardim.jpg', left: 'sofia.png', right: 'borboleta.png', speaker: 'Narrador', text: 'Ela vive pousando em flores.' },
             { bg: 'jardim.jpg', left: 'sofia.png', right: 'borboleta.png', speaker: 'Narrador', text: 'Principalmente rosas.' },
-            { bg: 'jardim.jpg', left: 'sofia.png', right: 'borboleta.png', speaker: 'Narrador', text: 'Ela diz:' },
+            { bg: 'jardim.jpg', left: 'sofia.png', right: 'borboleta.png', speaker: 'Narrador', text: 'Sofia, curiosa, vai até ela e tira sua dúvida.' },
+            { bg: 'jardim.jpg', left: 'sofia.png', right: 'borboleta.png', speaker: 'Sofia', text: '— Você sabe me dizer por que Ryhan fica tão feliz quando vê Tainá?' },
+            { bg: 'jardim.jpg', left: 'sofia.png', right: 'borboleta.png', speaker: 'Narrador', text: 'A Borboleta diz...' },
             { bg: 'jardim.jpg', left: 'sofia.png', right: 'borboleta.png', speaker: 'Borboleta', text: '— Algumas pessoas carregam primavera por onde passam.' },
             { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Sofia', text: 'Não entende.' },
             { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Mas começa a reparar.' },
@@ -351,7 +361,9 @@
             { bg: 'jardim.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Era como se... ela tivesse um jeito único de viver.' },
 
             // Cena 10
-            { bg: 'telhado.jpg', left: 'sofia.png', right: 'gato_velho.png', speaker: 'Narrador', text: 'Até que Sofia encontra... O gato mais velho do bairro.' },
+            { bg: 'telhado.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Andando pelos telhados das casas' },
+            { bg: 'telhado.jpg', left: 'sofia.png', right: 'gato_velho.png', speaker: 'Narrador', text: 'Sofia encontra alguém...' },
+            { bg: 'telhado.jpg', left: 'sofia.png', right: 'gato_velho.png', speaker: 'Narrador', text: 'O gato mais velho do bairro.' },
             { bg: 'telhado.jpg', left: 'sofia.png', right: 'gato_velho.png', speaker: 'Narrador', text: 'Muito calmo. Escuta Sofia contar toda sua aventura.' },
             { bg: 'telhado.jpg', left: 'sofia.png', right: 'gato_velho.png', speaker: 'Sofia', text: '— Já descobri dezenas de motivos do porque Ryhan sorri toda vez que olha para Tainá.' },
             { bg: 'telhado.jpg', left: 'sofia.png', right: 'gato_velho.png', speaker: 'Sofia', text: '— Mas nenhum explica tudo.' },
@@ -359,7 +371,7 @@
             { bg: 'telhado.jpg', left: 'sofia.png', right: 'gato_velho.png', speaker: 'Gato', text: '— Porque você procura uma resposta como quem procura uma única estrela.' },
             { bg: 'telhado.jpg', left: 'sofia.png', right: 'gato_velho.png', speaker: 'Gato', text: '*Ele aponta para o céu.*' },
             { bg: 'telhado.jpg', left: 'sofia.png', right: 'gato_velho.png', speaker: 'Gato', text: '— Mas o céu nunca é bonito por causa de uma estrela só.' },
-            { bg: 'telhado.jpg', left: 'sofia.png', right: 'gato_velho.png', speaker: 'Narrador', text: 'Sofia fica em silêncio.' },
+            { bg: 'telhado.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Sofia fica em silêncio.' },
 
             // Cena 11
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Naquela noite...' },
@@ -372,8 +384,7 @@
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Canta baixinho.' },
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Mais tarde pega o violão.' },
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Em outro momento apenas sorri.' },
-            { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Depois faz carinho nas flores.' },
-            { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Ensegida não faz absolutamente nada.' },
+            { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Depois faz carinho nas flores.', text: 'En seguida não faz absolutamente nada.' },
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Só fica ali.' },
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Mesmo parada...' },
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Ryhan continua olhando para ela com aquele mesmo brilho.' },
@@ -383,8 +394,7 @@
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Nem o perfume.' },
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Nem o cabelo.' },
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Nem o sorriso.' },
-            { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Nem os olhos brilhando.' },
-            { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Nem o violão.' },
+            { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Nem os olhos brilhando.', text: 'Nem o violão.' },
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Nem os desenhos.' },
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Nem a comida.' },
             { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Nem a dança.' },
@@ -435,11 +445,12 @@
             };
         }
 
+        // Sistema Auto-Ajustável para Telas Verticais (Garante tamanho igual em qualquer celular)
         function resizeGame() {
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
-            const scaleX = windowWidth / 1280;
-            const scaleY = windowHeight / 720;
+            const scaleX = windowWidth / 430;
+            const scaleY = windowHeight / 765;
             const scale = Math.min(scaleX, scaleY);
             wrapper.style.transform = `scale(${scale})`;
             wrapper.style.transformOrigin = 'center center';
@@ -454,7 +465,7 @@
             dialogueContainer.style.display = 'flex';
             
             try {
-                bgMusic.volume = 0.15; // Música bem mais suave de fundo
+                bgMusic.volume = 0.15;
                 bgMusic.play();
             } catch(e) {}
             
@@ -485,6 +496,7 @@
                 rightSprite.style.display = 'none';
             }
 
+            // Sistema de Destaque Vertical Ativo/Inativo
             if (data.speaker === 'Sofia') {
                 leftSprite.className = 'sprite active-speaker';
                 rightSprite.className = 'sprite inactive-speaker';
@@ -498,9 +510,8 @@
 
             nameTag.innerText = data.speaker;
             
-            // Sistema que detecta o "*" e transforma o texto em cinza de ação
+            // Renderização Inteligente das Ações Cinzas (entre asteriscos)
             if (data.text.startsWith('*') && data.text.endsWith('*')) {
-                // Remove os asteriscos e aplica a classe CSS cinza
                 let cleanText = data.text.replace(/\*/g, '');
                 dialogueText.innerHTML = `<span class="action-text">${cleanText}</span>`;
             } else {
