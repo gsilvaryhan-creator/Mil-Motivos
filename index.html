@@ -22,7 +22,7 @@
             width: 100vw;
             font-family: Arial, sans-serif;
         }
-        /* Container principal com proporção de cinema 16:9 */
+        /* Caixa virtual do jogo (Proporção 16:9 de cinema) */
         #game-wrapper {
             width: 1280px;
             height: 720px;
@@ -30,7 +30,7 @@
             background: linear-gradient(135deg, #1e1e24 0%, #111115 100%);
             overflow: hidden;
         }
-        /* Camada para as imagens de cenário */
+        /* Imagens de Cenário */
         .background {
             width: 1280px;
             height: 720px;
@@ -42,22 +42,19 @@
             transition: background-image 0.5s ease;
             z-index: 1;
         }
-        /* Camadas de Clique */
-        .click-layer {
+        /* Tela do Menu Principal */
+        #menu-screen {
             position: absolute;
             top: 0;
             left: 0;
             width: 1280px;
             height: 720px;
-            z-index: 10;
-            cursor: pointer;
-        }
-        #menu-screen {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
             padding: 80px 20px;
+            z-index: 10;
         }
         h1 {
             color: #ffffff;
@@ -68,21 +65,26 @@
             text-shadow: 4px 4px 15px rgba(0,0,0,0.9);
             z-index: 2;
         }
-        .start-text {
-            color: #ffcc00;
-            font-size: 28px;
+        /* O BOTÃO REAL DE JOGAR */
+        #start-button {
+            background-color: #ffcc00;
+            color: #000000;
+            border: 4px solid #ffffff;
+            border-radius: 50px;
+            padding: 20px 60px;
+            font-size: 32px;
             font-weight: bold;
-            animation: pulse 1.2s infinite;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
-            text-align: center;
-            z-index: 2;
+            cursor: pointer;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s, background-color 0.2s;
+            z-index: 15;
+            outline: none;
         }
-        @keyframes pulse {
-            0% { opacity: 0.4; }
-            50% { opacity: 1; }
-            100% { opacity: 0.4; }
+        #start-button:active {
+            transform: scale(0.95);
+            background-color: #e6b800;
         }
-        /* Configuração dos Personagens */
+        /* Personagens */
         .sprite {
             position: absolute;
             bottom: 220px;
@@ -103,7 +105,7 @@
             z-index: 2;
             pointer-events: none;
         }
-        /* Destacamento de Foco */
+        /* Efeitos de Foco nos Personagens */
         .active-speaker {
             filter: brightness(1) contrast(1);
             transform: scale(1.05);
@@ -112,7 +114,7 @@
             filter: brightness(0.4);
             transform: scale(0.95);
         }
-        /* Caixa de Diálogo */
+        /* Caixa de Diálogo Reativa para Avançar a História */
         #dialogue-container {
             position: absolute;
             bottom: 25px;
@@ -126,6 +128,8 @@
             display: none;
             flex-direction: column;
             justify-content: flex-start;
+            z-index: 20;
+            cursor: pointer;
         }
         #name-tag {
             color: #ffcc00;
@@ -151,12 +155,12 @@
         <img id="left-sprite" class="sprite" src="sofia.png" alt="" onerror="this.style.display='none';">
         <img id="right-sprite" class="sprite" src="" alt="" onerror="this.style.display='none';">
 
-        <div id="menu-screen" class="click-layer" onclick="startGame()">
+        <div id="menu-screen">
             <h1>Mil Motivos</h1>
-            <div class="start-text">Toque em qualquer lugar para começar</div>
+            <button id="start-button" onclick="startGame()">JOGAR</button>
         </div>
 
-        <div id="dialogue-container" class="click-layer" onclick="advanceStory()">
+        <div id="dialogue-container" onclick="advanceStory()">
             <div id="name-tag"></div>
             <div id="dialogue-text"></div>
         </div>
@@ -164,6 +168,152 @@
 
     <audio id="bg-music" src="musica.mp3" loop></audio>
 
-    <script src="game.js"></script>
+    <script>
+        const story = [
+            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Era fim de tarde. O sol atravessava a janela da sala.' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Ryhan estava sentado no sofá. Tainá cuidava de algumas flores.' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Sofia, uma pequena gatinha curiosa, observava tudo do alto da estante.' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Ela percebeu uma coisa: sempre que Ryhan olhava para Tainá... o olhar dele mudava.' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Não importava o que ela estivesse fazendo... Ryhan sorria. Sofia não entendia.' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: 'Ryhan', speaker: 'Ryhan', text: '— Você também quer saber, Sofia?' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: 'Ryhan', speaker: 'Ryhan', text: '— É difícil explicar...' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Sofia', text: '"Difícil explicar?"' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Sofia ficou inconformada. Sendo assim, ela descobriria sozinha.' },
+            
+            { bg: 'sala.jpg', left: 'sofia.png', right: 'coruja.png', speaker: 'Narrador', text: 'A primeira que encontra é Olívia. Uma velha coruja que acredita que toda resposta existe nos livros.' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: 'coruja.png', speaker: 'Coruja', text: '— Seu pai gosta dela porque ela é bonita.' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: 'coruja.png', speaker: 'Narrador', text: 'Sofia vê Tainá acordando com o cabelo bagunçado. Ryhan olha e sorri igual.' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: 'coruja.png', speaker: 'Sofia', text: '"Então não é só isso..."' },
+
+            { bg: 'jardim.jpg', left: 'sofia.png', right: 'beija_flor.png', speaker: 'Beijar flor', text: '— Ela deve ser como uma rosa: bonita, delicada e cheirosa.' },
+            { bg: 'jardim.jpg', left: 'sofia.png', right: 'beija_flor.png', speaker: 'Narrador', text: 'Mas Ryhan olha do mesmo jeito mesmo quando Tainá volta suja de terra das plantas.' },
+            { bg: 'jardim.jpg', left: 'sofia.png', right: 'beija_flor.png', speaker: 'Sofia', text: '"Talvez não seja só o perfume..."' },
+
+            { bg: 'cozinha.jpg', left: 'sofia.png', right: 'canario.png', speaker: 'Canario', text: '— Claro que é porque ela canta!' },
+            { bg: 'cozinha.jpg', left: 'sofia.png', right: 'canario.png', speaker: 'Narrador', text: 'Tainá canta enquanto cozinha. Mas num dia ela está cansada, não canta, e o sorriso continua.' },
+
+            { bg: 'quarto.jpg', left: 'sofia.png', right: 'lontra.png', speaker: 'Lontra', text: '— Ela vive desenhando paisagens. Quando alguém cria coisas bonitas, é impossível não amar.' },
+            { bg: 'quarto.jpg', left: 'sofia.png', right: 'lontra.png', speaker: 'Narrador', text: 'Ryhan sorri para ela antes mesmo de olhar o papel do desenho.' },
+
+            { bg: 'sala_escura.jpg', left: 'sofia.png', right: 'grilo.png', speaker: 'Grilo', text: '— É isso! A música encanta. Ela toca violão!' },
+            { bg: 'sala_escura.jpg', left: 'sofia.png', right: 'grilo.png', speaker: 'Narrador', text: 'Dias depois o violão está guardado, ela nem toca, e o sorriso continua igual.' },
+
+            { bg: 'sala.jpg', left: 'sofia.png', right: 'raposa.png', speaker: 'Raposa', text: '— Ele ama porque ela faz coisas para ele.' },
+            { bg: 'sala.jpg', left: 'sofia.png', right: 'raposa.png', speaker: 'Narrador', text: 'Mas Sofia vê Ryhan presenteando e fazendo gentilezas. Parecia natural, não uma troca.' },
+
+            { bg: 'jardim.jpg', left: 'sofia.png', right: 'ourico.png', speaker: 'Ouriço', text: '— Talvez ele goste do sorriso dela.' },
+            { bg: 'jardim.jpg', left: 'sofia.png', right: 'ourico.png', speaker: 'Narrador', text: 'Tainá está preocupada um dia, nem sorri. Mesmo assim, ele olha pra ela daquele jeito.' },
+
+            { bg: 'jardim.jpg', left: 'sofia.png', right: 'borboleta.png', speaker: 'Borboleta', text: '— Algumas pessoas carregam primavera por onde passam.' },
+            { bg: 'jardim.jpg', left: 'sofia.png', right: 'borboleta.png', speaker: 'Narrador', text: 'Tainá dança, ri sozinha, se anima com pequenas coisas. Ela tem um jeito único.' },
+
+            { bg: 'telhado.jpg', left: 'sofia.png', right: 'gato_velho.png', speaker: 'Sofia', text: '— Já descobri dezenas de motivos, mas nenhum explica tudo.' },
+            { bg: 'telhado.jpg', left: 'sofia.png', right: 'gato_velho.png', speaker: 'Gato Velho', text: '— Porque você procura uma resposta como quem procura uma única estrela. Mas o céu nunca é bonito por causa de uma estrela só.' },
+
+            { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'Sofia entende. Nunca foi uma única coisa. Eram as rosas, o violão, o jeito que ela ria...' },
+            { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Sofia', text: '"Não existe uma resposta. Existem milhares. E todas elas cabem dentro de uma única pessoa."' },
+            { bg: 'sala_escura.jpg', left: 'sofia.png', right: '', speaker: 'Narrador', text: 'O amor cresce nos detalhes que, juntos, tornam alguém impossível de substituir.' }
+        ];
+
+        let currentLine = 0;
+
+        const bgLayer = document.getElementById('bg-layer');
+        const menuScreen = document.getElementById('menu-screen');
+        const menuSofia = document.getElementById('menu-sofia');
+        const leftSprite = document.getElementById('left-sprite');
+        const rightSprite = document.getElementById('right-sprite');
+        const dialogueContainer = document.getElementById('dialogue-container');
+        const nameTag = document.getElementById('name-tag');
+        const dialogueText = document.getElementById('dialogue-text');
+        const bgMusic = document.getElementById('bg-music');
+        const wrapper = document.getElementById('game-wrapper');
+
+        // Inicializa o fundo do menu de forma segura
+        changeBackground('parte_fora.jpg');
+
+        function changeBackground(url) {
+            let img = new Image();
+            img.src = url;
+            img.onload = function() {
+                bgLayer.style.backgroundImage = `url('${url}')`;
+            };
+            img.onerror = function() {
+                bgLayer.style.backgroundImage = 'none'; // Mantém o gradiente elegante caso falte a foto
+            };
+        }
+
+        // Sistema inteligente de adaptação de tela (Zoom sem distorcer)
+        function resizeGame() {
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const scaleX = windowWidth / 1280;
+            const scaleY = windowHeight / 720;
+            const scale = Math.min(scaleX, scaleY);
+            wrapper.style.transform = `scale(${scale})`;
+            wrapper.style.transformOrigin = 'center center';
+        }
+        window.addEventListener('resize', resizeGame);
+        window.addEventListener('orientationchange', () => setTimeout(resizeGame, 200));
+        resizeGame();
+
+        // O botão chama essa função e inicia tudo
+        function startGame() {
+            menuScreen.style.display = 'none';
+            menuSofia.style.display = 'none';
+            dialogueContainer.style.display = 'flex'; // Abre a caixa de diálogo
+            
+            // Liga a música nativa
+            try {
+                bgMusic.volume = 0.4;
+                bgMusic.play();
+            } catch(e) {
+                console.log("Áudio bloqueado pelo navegador.");
+            }
+            
+            advanceStory();
+        }
+
+        function advanceStory() {
+            if (currentLine >= story.length) {
+                wrapper.style.transition = 'opacity 2s';
+                wrapper.style.opacity = '0';
+                return;
+            }
+
+            const data = story[currentLine];
+            changeBackground(data.bg);
+
+            if (data.left) {
+                leftSprite.src = data.left;
+                leftSprite.style.display = 'block';
+            } else {
+                leftSprite.style.display = 'none';
+            }
+
+            if (data.right) {
+                rightSprite.src = data.right;
+                rightSprite.style.display = 'block';
+            } else {
+                rightSprite.style.display = 'none';
+            }
+
+            // Sistema de destaque do personagem que está falando
+            if (data.speaker === 'Sofia') {
+                leftSprite.className = 'sprite active-speaker';
+                rightSprite.className = 'sprite inactive-speaker';
+            } else if (data.speaker === 'Narrador') {
+                leftSprite.className = 'sprite';
+                rightSprite.className = 'sprite';
+            } else {
+                leftSprite.className = 'sprite inactive-speaker';
+                rightSprite.className = 'sprite active-speaker';
+            }
+
+            nameTag.innerText = data.speaker;
+            dialogueText.innerText = data.text;
+
+            currentLine++;
+        }
+    </script>
 </body>
 </html>
