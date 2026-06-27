@@ -168,8 +168,8 @@ function startGame(scene) {
     nameTag.setVisible(true);
     textObject.setVisible(true);
     
-    music = scene.sound.add('musica_fundo', { loop: true, volume: 0.5 });
-    music.play();
+    // music = scene.sound.add('musica_fundo', { loop: true, volume: 0.5 });
+    // music.play();
     
     advanceStory();
 }
