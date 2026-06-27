@@ -84,4 +84,133 @@ function preload() {
     this.load.image('jardim', 'jardim.jpg');
     this.load.image('cozinha', 'cozinha.jpg');
     this.load.image('quarto', 'quarto.jpg');
-    this.load.image('sala_escura', 'sala_es
+    this.load.image('sala_escura', 'sala_escura.jpg');
+    this.load.image('telhado', 'telhado.jpg');
+
+    // Personagens (.png)
+    this.load.image('sofia', 'sofia.png');
+    this.load.image('coruja', 'coruja.png');
+    this.load.image('beija_flor', 'beija_flor.png');
+    this.load.image('canario', 'canario.png');
+    this.load.image('lontra', 'lontra.png');
+    this.load.image('grilo', 'grilo.png');
+    this.load.image('raposa', 'raposa.png');
+    this.load.image('ourico', 'ourico.png');
+    this.load.image('borboleta', 'borboleta.png');
+    this.load.image('gato_velho', 'gato_velho.png');
+
+    // Áudio (.mp3)
+    this.load.audio('musica_fundo', 'musica.mp3');
+}
+
+function create() {
+    // Carrega as fontes em segundo plano
+    this.add.text(-100, -100, 'preload', { font: '1px "Press Start 2P"' });
+    this.add.text(-100, -100, 'preload', { font: '1px "Cinzel Decorative"' });
+
+    // Pequena pausa de 1 segundo para garantir estabilidade no carregamento
+    this.time.delayedCall(1000, () => {
+        // Background Inicial (Menu)
+        bg = this.add.image(640, 360, 'parte_fora').setDisplaySize(1280, 720);
+
+        // Sprite da Sofia no Menu
+        menuSofia = this.add.image(480, 520, 'sofia_2').setOrigin(0.5, 1);
+
+        // Personagens do Jogo (Começam invisíveis)
+        leftSprite = this.add.image(300, 450, 'sofia').setOrigin(0.5, 1).setVisible(false);
+        rightSprite = this.add.image(980, 450, 'coruja').setOrigin(0.5, 1).setVisible(false);
+
+        // Caixa de Diálogo Arredondada e Grande
+        dialogueBox = this.add.graphics();
+        dialogueBox.fillStyle(0x000000, 0.75);
+        dialogueBox.fillRoundedRect(50, 480, 1180, 200, 30);
+        dialogueBox.lineStyle(4, 0xffffff, 0.5);
+        dialogueBox.strokeRoundedRect(50, 480, 1180, 200, 30);
+        dialogueBox.setVisible(false);
+
+        // Textos da Interface
+        nameTag = this.add.text(80, 495, '', { font: 'bold 24px "Press Start 2P"', fill: '#ffcc00' }).setVisible(false);
+        textObject = this.add.text(80, 550, '', { font: '20px "Press Start 2P"', fill: '#ffffff', wordWrap: { width: 1120 }, lineSpacing: 10 }).setVisible(false);
+
+        // TÍTULO GRANDE
+        titleText = this.add.text(640, 150, 'Mil Motivos', { font: 'bold 90px "Cinzel Decorative"', fill: '#ffffff' }).setOrigin(0.5);
+        titleText.setShadow(3, 3, 'rgba(0,0,0,0.7)', 5);
+
+        // TEXTO PISCANDO
+        startText = this.add.text(640, 620, 'Aperte em qualquer lugar para começar', { font: '18px "Press Start 2P"', fill: '#ffffff' }).setOrigin(0.5);
+        
+        this.tweens.add({
+            targets: startText,
+            alpha: 0,
+            duration: 800,
+            yoyo: true,
+            repeat: -1
+        });
+    }, [], this);
+
+    // Clique para iniciar ou passar texto
+    this.input.on('pointerdown', () => {
+        if (!gameStarted && titleText) {
+            startGame(this);
+        } else if (gameStarted) {
+            advanceStory();
+        }
+    });
+}
+
+function startGame(scene) {
+    gameStarted = true;
+    startText.destroy();
+    titleText.destroy();
+    menuSofia.destroy();
+    
+    dialogueBox.setVisible(true);
+    nameTag.setVisible(true);
+    textObject.setVisible(true);
+    
+    music = scene.sound.add('musica_fundo', { loop: true, volume: 0.5 });
+    music.play();
+    
+    advanceStory();
+}
+
+function advanceStory() {
+    if (currentLine >= story.length) {
+        game.scene.scenes[0].cameras.main.fadeOut(2000, 0, 0, 0);
+        return;
+    }
+
+    const data = story[currentLine];
+    bg.setTexture(data.bg);
+
+    leftSprite.setVisible(!!data.left).setTexture(data.left || 'sofia');
+    if (data.right) {
+        rightSprite.setVisible(true).setTexture(data.right);
+    } else {
+        rightSprite.setVisible(false);
+    }
+
+    // Sistema de Destaque
+    if (data.speaker === 'Sofia') {
+        highlight(leftSprite, rightSprite);
+    } else if (data.speaker === 'Narrador') {
+        leftSprite.clearTint().setScale(1);
+        rightSprite.clearTint().setScale(1);
+    } else {
+        highlight(rightSprite, leftSprite);
+    }
+
+    nameTag.setText(data.speaker.toUpperCase());
+    textObject.setText(data.text);
+
+    currentLine++;
+}
+
+function update() {}
+
+function highlight(speaker, listener) {
+    speaker.clearTint().setScale(1.1);
+    if (listener.visible) {
+        listener.setTint(0x666666).setScale(0.9);
+    }
+}
