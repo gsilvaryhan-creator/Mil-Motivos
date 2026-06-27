@@ -100,7 +100,7 @@ function preload() {
     this.load.image('gato_velho', 'gato_velho.png');
 
     // Áudio (.mp3)
-    this.load.audio('musica_fundo', 'musica.mp3');
+    // this.load.audio('musica_fundo', 'musica.mp3');
 }
 
 function create() {
