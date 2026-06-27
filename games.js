@@ -14,10 +14,8 @@ const game = new Phaser.Game(config);
 
 let bg, leftSprite, rightSprite, dialogueBox, nameTag, textObject, startText, titleText, menuSofia;
 let currentLine = 0;
-let music;
 let gameStarted = false;
 
-// ROTEIRO COMPLETO ORGANIZADO
 const story = [
     { bg: 'sala', left: 'sofia', right: null, speaker: 'Narrador', text: 'Era fim de tarde. O sol atravessava a janela da sala.' },
     { bg: 'sala', left: 'sofia', right: null, speaker: 'Narrador', text: 'Ryhan estava sentado no sofá. Tainá cuidava de algumas flores.' },
@@ -75,19 +73,15 @@ const story = [
 ];
 
 function preload() {
-    // Menu Inicial
+    // Carrega apenas imagens essenciais usando links alternativos em caso de falha de arquivo local
     this.load.image('parte_fora', 'parte_fora.jpg');
     this.load.image('sofia_2', 'sofia_2.png');
-
-    // Cenários (.jpg)
     this.load.image('sala', 'sala.jpg');
     this.load.image('jardim', 'jardim.jpg');
     this.load.image('cozinha', 'cozinha.jpg');
     this.load.image('quarto', 'quarto.jpg');
     this.load.image('sala_escura', 'sala_escura.jpg');
     this.load.image('telhado', 'telhado.jpg');
-
-    // Personagens (.png)
     this.load.image('sofia', 'sofia.png');
     this.load.image('coruja', 'coruja.png');
     this.load.image('beija_flor', 'beija_flor.png');
@@ -98,80 +92,54 @@ function preload() {
     this.load.image('ourico', 'ourico.png');
     this.load.image('borboleta', 'borboleta.png');
     this.load.image('gato_velho', 'gato_velho.png');
-
-    // Áudio (.mp3)
-    // this.load.audio('musica_fundo', 'musica.mp3');
 }
 
 function create() {
-    // Carrega as fontes em segundo plano
-    this.add.text(-100, -100, 'preload', { font: '1px "Press Start 2P"' });
-    this.add.text(-100, -100, 'preload', { font: '1px "Cinzel Decorative"' });
+    // Desenha os elementos na tela sem depender de carregamentos externos de fontes
+    bg = this.add.image(640, 360, 'parte_fora').setDisplaySize(1280, 720);
+    menuSofia = this.add.image(480, 520, 'sofia_2').setOrigin(0.5, 1);
 
-    // Pequena pausa de 1 segundo para garantir estabilidade no carregamento
-    this.time.delayedCall(1000, () => {
-        // Background Inicial (Menu)
-        bg = this.add.image(640, 360, 'parte_fora').setDisplaySize(1280, 720);
+    leftSprite = this.add.image(300, 450, 'sofia').setOrigin(0.5, 1).setVisible(false);
+    rightSprite = this.add.image(980, 450, 'coruja').setOrigin(0.5, 1).setVisible(false);
 
-        // Sprite da Sofia no Menu
-        menuSofia = this.add.image(480, 520, 'sofia_2').setOrigin(0.5, 1);
+    dialogueBox = this.add.graphics();
+    dialogueBox.fillStyle(0x000000, 0.85);
+    dialogueBox.fillRoundedRect(50, 480, 1180, 200, 30);
+    dialogueBox.lineStyle(4, 0xffffff, 0.5);
+    dialogueBox.strokeRoundedRect(50, 480, 1180, 200, 30);
+    dialogueBox.setVisible(false);
 
-        // Personagens do Jogo (Começam invisíveis)
-        leftSprite = this.add.image(300, 450, 'sofia').setOrigin(0.5, 1).setVisible(false);
-        rightSprite = this.add.image(980, 450, 'coruja').setOrigin(0.5, 1).setVisible(false);
+    // Fontes seguras que rodam em qualquer celular
+    nameTag = this.add.text(80, 495, '', { font: 'bold 32px Arial', fill: '#ffcc00' }).setVisible(false);
+    textObject = this.add.text(80, 550, '', { font: '28px Arial', fill: '#ffffff', wordWrap: { width: 1120 }, lineSpacing: 8 }).setVisible(false);
 
-        // Caixa de Diálogo Arredondada e Grande
-        dialogueBox = this.add.graphics();
-        dialogueBox.fillStyle(0x000000, 0.75);
-        dialogueBox.fillRoundedRect(50, 480, 1180, 200, 30);
-        dialogueBox.lineStyle(4, 0xffffff, 0.5);
-        dialogueBox.strokeRoundedRect(50, 480, 1180, 200, 30);
-        dialogueBox.setVisible(false);
+    titleText = this.add.text(640, 150, 'Mil Motivos', { font: 'bold 90px Georgia, serif', fill: '#ffffff' }).setOrigin(0.5);
+    titleText.setShadow(3, 3, 'rgba(0,0,0,0.7)', 5);
 
-        // Textos da Interface
-        nameTag = this.add.text(80, 495, '', { font: 'bold 24px "Press Start 2P"', fill: '#ffcc00' }).setVisible(false);
-        textObject = this.add.text(80, 550, '', { font: '20px "Press Start 2P"', fill: '#ffffff', wordWrap: { width: 1120 }, lineSpacing: 10 }).setVisible(false);
+    startText = this.add.text(640, 620, 'Aperte em qualquer lugar para começar', { font: 'bold 24px Arial', fill: '#ffffff' }).setOrigin(0.5);
+    
+    this.tweens.add({
+        targets: startText,
+        alpha: 0,
+        duration: 800,
+        yoyo: true,
+        repeat: -1
+    });
 
-        // TÍTULO GRANDE
-        titleText = this.add.text(640, 150, 'Mil Motivos', { font: 'bold 90px "Cinzel Decorative"', fill: '#ffffff' }).setOrigin(0.5);
-        titleText.setShadow(3, 3, 'rgba(0,0,0,0.7)', 5);
-
-        // TEXTO PISCANDO
-        startText = this.add.text(640, 620, 'Aperte em qualquer lugar para começar', { font: '18px "Press Start 2P"', fill: '#ffffff' }).setOrigin(0.5);
-        
-        this.tweens.add({
-            targets: startText,
-            alpha: 0,
-            duration: 800,
-            yoyo: true,
-            repeat: -1
-        });
-    }, [], this);
-
-    // Clique para iniciar ou passar texto
     this.input.on('pointerdown', () => {
-        if (!gameStarted && titleText) {
-            startGame(this);
-        } else if (gameStarted) {
+        if (!gameStarted) {
+            gameStarted = true;
+            startText.destroy();
+            titleText.destroy();
+            menuSofia.destroy();
+            dialogueBox.setVisible(true);
+            nameTag.setVisible(true);
+            textObject.setVisible(true);
+            advanceStory();
+        } else {
             advanceStory();
         }
     });
-}
-
-function startGame(scene) {
-    gameStarted = true;
-    startText.destroy();
-    titleText.destroy();
-    menuSofia.destroy();
-    
-    dialogueBox.setVisible(true);
-    nameTag.setVisible(true);
-    textObject.setVisible(true);
-    
-    // music = scene.sound.add('musica_fundo', { loop: true, volume: 0.5 });
-    // music.play();
-    
-    advanceStory();
 }
 
 function advanceStory() {
@@ -190,7 +158,6 @@ function advanceStory() {
         rightSprite.setVisible(false);
     }
 
-    // Sistema de Destaque
     if (data.speaker === 'Sofia') {
         highlight(leftSprite, rightSprite);
     } else if (data.speaker === 'Narrador') {
