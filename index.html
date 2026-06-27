@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mil Motivos</title>
     <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
         body { 
             margin: 0; 
             padding: 0; 
@@ -13,20 +18,152 @@
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            height: 100vh; 
+            height: 100vh;
+            width: 100vw;
+            font-family: Arial, sans-serif;
         }
-        #game-container {
+        /* Container principal com proporção de cinema 16:9 */
+        #game-wrapper {
             width: 1280px;
             height: 720px;
+            position: relative;
+            background: linear-gradient(135deg, #1e1e24 0%, #111115 100%);
+            overflow: hidden;
+        }
+        /* Camada para as imagens de cenário */
+        .background {
+            width: 1280px;
+            height: 720px;
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: background-image 0.5s ease;
+            z-index: 1;
+        }
+        /* Camadas de Clique */
+        .click-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1280px;
+            height: 720px;
+            z-index: 10;
+            cursor: pointer;
+        }
+        #menu-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 80px 20px;
+        }
+        h1 {
+            color: #ffffff;
+            font-size: 85px;
+            margin: 0;
+            text-align: center;
+            font-family: 'Georgia', serif;
+            text-shadow: 4px 4px 15px rgba(0,0,0,0.9);
+            z-index: 2;
+        }
+        .start-text {
+            color: #ffcc00;
+            font-size: 28px;
+            font-weight: bold;
+            animation: pulse 1.2s infinite;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
+            text-align: center;
+            z-index: 2;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+        /* Configuração dos Personagens */
+        .sprite {
+            position: absolute;
+            bottom: 220px;
+            height: 380px;
+            max-width: 400px;
+            object-fit: contain;
+            transition: all 0.3s ease;
+            display: none;
+            z-index: 3;
+        }
+        #left-sprite { left: 120px; }
+        #right-sprite { right: 120px; }
+        #menu-sofia {
+            position: absolute;
+            bottom: 140px;
+            left: 440px;
+            height: 400px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        /* Destacamento de Foco */
+        .active-speaker {
+            filter: brightness(1) contrast(1);
+            transform: scale(1.05);
+        }
+        .inactive-speaker {
+            filter: brightness(0.4);
+            transform: scale(0.95);
+        }
+        /* Caixa de Diálogo */
+        #dialogue-container {
+            position: absolute;
+            bottom: 25px;
+            left: 64px;
+            width: 1152px;
+            height: 190px;
+            background-color: rgba(0, 0, 0, 0.85);
+            border: 4px solid rgba(255, 255, 255, 0.4);
+            border-radius: 25px;
+            padding: 25px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        #name-tag {
+            color: #ffcc00;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        #dialogue-text {
+            color: #ffffff;
+            font-size: 26px;
+            line-height: 1.4;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.60.0/phaser.min.js"></script>
 </head>
 <body>
 
-    <div id="game-container"></div>
+    <div id="game-wrapper">
+        <div id="bg-layer" class="background"></div>
+
+        <img id="menu-sofia" src="sofia_2.png" alt="" onerror="this.style.display='none';">
+        <img id="left-sprite" class="sprite" src="sofia.png" alt="" onerror="this.style.display='none';">
+        <img id="right-sprite" class="sprite" src="" alt="" onerror="this.style.display='none';">
+
+        <div id="menu-screen" class="click-layer" onclick="startGame()">
+            <h1>Mil Motivos</h1>
+            <div class="start-text">Toque em qualquer lugar para começar</div>
+        </div>
+
+        <div id="dialogue-container" class="click-layer" onclick="advanceStory()">
+            <div id="name-tag"></div>
+            <div id="dialogue-text"></div>
+        </div>
+    </div>
+
+    <audio id="bg-music" src="musica.mp3" loop></audio>
 
     <script src="game.js"></script>
-
 </body>
 </html>
